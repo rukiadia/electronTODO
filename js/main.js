@@ -8,6 +8,10 @@ const module = {
     module.addBtn = document.querySelector('#addBtn');
     module.todoText = document.querySelector('#todoText');
     module.todoList = document.querySelector('.todoList');
+    module.todoList.addEventListener('click', (event) => {
+      const timeStamp = event.target.dataset.timeStamp;
+      module.updateTodo(timeStamp);
+    });
     module.addBtn.addEventListener('click', () => {
       module.addTodo();
     }, false);
@@ -16,6 +20,7 @@ const module = {
     for (let i = 0; i < resultArray.length; i++) {
       var li = document.createElement('li');
       li.innerHTML = `${resultArray[i].text}`;
+      li.dataset.timeStamp = resultArray[i].timeStamp;
       module.todoList.appendChild(li);
     }
   },
@@ -61,12 +66,13 @@ const module = {
     // DBからObjectStoreへのトランザクションを生成する
     // この段階でtodoというObjectStoreをつくってないとエラーを吐く
     // アクティブなobjectの生成
-    const transaction = db.transaction('todo', 'readwrite');
+    const transaction = db.transaction(['todo'], 'readwrite');
     const todoObjectStore = transaction.objectStore('todo');
     // putするリクエストを生成
     todoObjectStore.put({
       text: text,
       date: moment().format('MM/DD'),
+      isComplete: false,
       timeStamp: Date.now()
     });
     transaction.oncomplete = () => {
@@ -77,29 +83,47 @@ const module = {
       alert(error);
     };
   },
+  updateTodo: (timeStamp) => {
+    // データの完了フラグ(isComplete)を書き換える
+    const db = module.db;
+    const store = db.transaction(['todo'], 'readwrite').objectStore('todo');    const cursorRequest = store.openCursor();
+    const request = store.get(parseInt(timeStamp, 10));
+
+    request.onsuccess = (event) => {
+      let data = request.result;
+      data.isComplete = !(data.isComplete);
+      const requestUpdate = store.put(data);
+      requestUpdate.onsuccess = (event) => {
+        console.log('data update success');
+      };
+      requestUpdate.onerror = (error) => {
+        alert(error);
+      };
+    };
+
+    request.onerror = (error) => {
+      alert(error);
+    };
+  },
   getAllTodo: (renderer) => {
     if (renderer) {
       document.querySelector('.todoList').innerHTML = '';
     }
     const db = module.db;
-    const transaction = db.transaction('todo', 'readwrite');
-    const store = transaction.objectStore('todo');
+    const store = db.transaction(['todo'], 'readwrite').objectStore('todo');
 
-    // keyPathに対して検索をかける範囲を取得
-    const range = IDBKeyRange.lowerBound(0);
-    const cursorRequest = store.openCursor(range);
-
-    // カーソルリクエストの成功
+    // 値を横断的に取得
+    const cursorRequest = store.openCursor();
     const resultArray = [];
     cursorRequest.onsuccess = (event) => {
+      // カーソルリクエストの成功
       const result = event.target.result;
-      // 走査すべきObjectがこれ以上ない場合
+      // 走査すべきObjectがこれ以上ない場合は処理終了
       if (!result) {
         renderer(resultArray);
         return;
       }
       resultArray.push(result.value);
-      // マッチした場合は処理を続行
       result.continue();
     };
 
