@@ -2,3 +2,51 @@
   padding: 0;
   margin: 0;
 }
+body {
+  background-color: #8FF7A7;
+  font-size: 16px;
+}
+.wrapper {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  width: 600px;
+  margin: 32px auto 0;
+  padding: 16px;
+}
+.form {
+  display: flex;
+}
+#todoText {
+  width: 90%;
+  border-radius: 4px;
+  border: 2px solid #EEEEEE;
+  padding: 8px;
+}
+#todoText:focus {
+  border: 2px solid #757761;
+  outline: none;
+}
+#addTodo {
+  width: 10%;
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  border: 2px solid #8FF7A7;
+  color: #8FF7A7;
+  margin-left: 16px;
+  padding: 8px;
+}
+#addTodo:hover {
+  background-color: #8FF7A7;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.todoList {
+  margin-top: 16px;
+}
+.todoList li {
+  line-height: 1.5;
+  list-style-type: none;
+}
+.todoList li + li {
+  margin-top: 8px;
+}
