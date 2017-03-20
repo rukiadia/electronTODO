@@ -4,21 +4,24 @@ const moment = require('moment');
 
 const module = {
   db: null,
-  setEventListeners: function(){
-    this.addBtn = document.querySelector('#addBtn');
-    this.todoText = document.querySelector('#todoText');
-    this.addBtn.addEventListener('click', function(){
+  setEventListeners: () => {
+    module.addBtn = document.querySelector('#addBtn');
+    module.todoText = document.querySelector('#todoText');
+    module.todoList = document.querySelector('.todoList');
+    module.addBtn.addEventListener('click', () => {
       module.addTodo();
     }, false);
   },
-  renderer: function(todo){
-    var li = document.createElement('li');
-    li.innerHTML = `${todo.text}`;
-    document.querySelector('.todoList').appendChild(li);
+  renderer: (resultArray) => {
+    for (let i = 0; i < resultArray.length; i++) {
+      var li = document.createElement('li');
+      li.innerHTML = `${resultArray[i].text}`;
+      module.todoList.appendChild(li);
+    }
   },
-  init: function(){
+  init: () => {
     // 初期処理
-    this.setEventListeners();
+    module.setEventListeners();
     var request = window.indexedDB.open('my_db', 3);
 
     request.onupgradeneeded = (event) => {
@@ -47,8 +50,8 @@ const module = {
       module.getAllTodo(module.renderer);
     }
   },
-  addTodo: function(){
-    const text = this.todoText.value;
+  addTodo: () => {
+    const text = module.todoText.value;
     if (!text.length) {
       alert('入力欄が未入力です');
       return;
@@ -74,7 +77,7 @@ const module = {
       alert(error);
     };
   },
-  getAllTodo: function(renderer){
+  getAllTodo: (renderer) => {
     if (renderer) {
       document.querySelector('.todoList').innerHTML = '';
     }
@@ -87,15 +90,15 @@ const module = {
     const cursorRequest = store.openCursor(range);
 
     // カーソルリクエストの成功
+    const resultArray = [];
     cursorRequest.onsuccess = (event) => {
       const result = event.target.result;
       // 走査すべきObjectがこれ以上ない場合
       if (!result) {
+        renderer(resultArray);
         return;
       }
-      if (renderer) {
-        renderer(result.value);
-      }
+      resultArray.push(result.value);
       // マッチした場合は処理を続行
       result.continue();
     };
