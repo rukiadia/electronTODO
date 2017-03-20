@@ -2,6 +2,13 @@
 
 const module = {
   db: null,
+  setEventListeners: function(){
+    this.addBtn = document.querySelector('#addBtn');
+    this.todoText = document.querySelector('#todoText');
+    this.addBtn.addEventListener('click', function(){
+      module.addTodo();
+    }, false);
+  },
   renderer: function(todo){
     var li = document.createElement('li');
     li.innerHTML = todo.text;
@@ -9,6 +16,7 @@ const module = {
   },
   init: function(){
     // 初期処理
+    this.setEventListeners();
     var request = window.indexedDB.open('my_db', 3);
 
     request.onupgradeneeded = (event) => {
@@ -37,7 +45,8 @@ const module = {
       module.getAllTodo(module.renderer);
     }
   },
-  addTodo: function(text){
+  addTodo: function(){
+    const text = this.todoText.value;
     const db = module.db;
     // DBからObjectStoreへのトランザクションを生成する
     // この段階でtodoというObjectStoreをつくってないとエラーを吐く
@@ -91,13 +100,5 @@ const module = {
 };
 
 (function(){
-  const addTodo = document.querySelector('#addTodo');
-  const todoText = document.querySelector('#todoText');
-
-  addTodo.addEventListener('click', function(){
-    const text = todoText.value;
-    module.addTodo(text);
-  }, false);
-
   module.init();
 })();

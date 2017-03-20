@@ -7,9 +7,9 @@
   </head>
   <body>
     <div class="wrapper">
-      <form class="form">
+      <form class="form" onsubmit='module.addTodo()'>
         <input type="text" id="todoText" value="" placeholder="please type YOUR TODO">
-        <input type="button" id="addTodo" value="add"/>
+        <input type="button" id="addBtn" value="add"/>
       </form>
       <ul class="todoList"></ul>
     </div>

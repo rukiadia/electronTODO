@@ -3,7 +3,7 @@
   margin: 0;
 }
 body {
-  background-color: #8FF7A7;
+  background-color: #4F5D75;
   font-size: 16px;
 }
 .wrapper {
@@ -26,17 +26,17 @@ body {
   border: 2px solid #757761;
   outline: none;
 }
-#addTodo {
+#addBtn {
   width: 10%;
   background-color: #FFFFFF;
   border-radius: 4px;
-  border: 2px solid #8FF7A7;
-  color: #8FF7A7;
+  border: 2px solid #4F5D75;
+  color: #4F5D75;
   margin-left: 16px;
   padding: 8px;
 }
-#addTodo:hover {
-  background-color: #8FF7A7;
+#addBtn:hover {
+  background-color: #4F5D75;
   color: #FFFFFF;
   cursor: pointer;
 }
