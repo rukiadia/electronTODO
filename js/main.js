@@ -1,5 +1,7 @@
 "use strict";
 
+const moment = require('moment');
+
 const module = {
   db: null,
   setEventListeners: function(){
@@ -11,7 +13,7 @@ const module = {
   },
   renderer: function(todo){
     var li = document.createElement('li');
-    li.innerHTML = todo.text;
+    li.innerHTML = `${todo.text}`;
     document.querySelector('.todoList').appendChild(li);
   },
   init: function(){
@@ -47,6 +49,11 @@ const module = {
   },
   addTodo: function(){
     const text = this.todoText.value;
+    if (!text.length) {
+      alert('入力欄が未入力です');
+      return;
+    }
+
     const db = module.db;
     // DBからObjectStoreへのトランザクションを生成する
     // この段階でtodoというObjectStoreをつくってないとエラーを吐く
@@ -56,6 +63,7 @@ const module = {
     // putするリクエストを生成
     todoObjectStore.put({
       text: text,
+      date: moment().format('MM/DD'),
       timeStamp: Date.now()
     });
     transaction.oncomplete = () => {
@@ -82,7 +90,7 @@ const module = {
     cursorRequest.onsuccess = (event) => {
       const result = event.target.result;
       // 走査すべきObjectがこれ以上ない場合
-      if (!!result == false) {
+      if (!result) {
         return;
       }
       if (renderer) {

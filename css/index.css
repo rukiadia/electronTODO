@@ -40,6 +40,9 @@ body {
   color: #FFFFFF;
   cursor: pointer;
 }
+#addBtn:focus {
+  outline: none;
+}
 .todoList {
   margin-top: 16px;
 }

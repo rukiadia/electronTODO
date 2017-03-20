@@ -7,9 +7,10 @@
     "start": "electron index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "sho yamada",
   "license": "MIT",
   "dependencies": {
-    "electron": "1.6.2"
+    "electron": "1.6.2",
+    "moment": "2.18.0"
   }
 }
