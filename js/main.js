@@ -9,8 +9,7 @@ const module = {
     module.todoText = document.querySelector('#todoText');
     module.todoList = document.querySelector('.todoList');
     module.todoList.addEventListener('click', (event) => {
-      const timeStamp = event.target.dataset.timeStamp;
-      module.updateTodo(timeStamp);
+      module.updateTodo(event.target);
     });
     module.addBtn.addEventListener('click', () => {
       module.addTodo();
@@ -21,6 +20,9 @@ const module = {
       var li = document.createElement('li');
       li.innerHTML = `${resultArray[i].text}`;
       li.dataset.timeStamp = resultArray[i].timeStamp;
+      if (resultArray[i].isComplete) {
+        li.classList.add('completed');
+      }
       module.todoList.appendChild(li);
     }
   },
@@ -83,18 +85,24 @@ const module = {
       alert(error);
     };
   },
-  updateTodo: (timeStamp) => {
+  updateTodo: (clickedList) => {
     // データの完了フラグ(isComplete)を書き換える
+    const timeStamp = clickedList.dataset.timeStamp;
     const db = module.db;
     const store = db.transaction(['todo'], 'readwrite').objectStore('todo');    const cursorRequest = store.openCursor();
     const request = store.get(parseInt(timeStamp, 10));
 
-    request.onsuccess = (event) => {
+    request.onsuccess = () => {
       let data = request.result;
       data.isComplete = !(data.isComplete);
       const requestUpdate = store.put(data);
-      requestUpdate.onsuccess = (event) => {
-        console.log('data update success');
+      requestUpdate.onsuccess = () => {
+        // リストの見た目も更新し、データと見た目の整合性をとる
+        if (clickedList.classList.contains('completed')) {
+          clickedList.classList.remove('completed');
+        } else {
+          clickedList.classList.add('completed');
+        }
       };
       requestUpdate.onerror = (error) => {
         alert(error);
