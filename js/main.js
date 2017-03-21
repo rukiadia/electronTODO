@@ -20,6 +20,7 @@ const module = {
       var li = document.createElement('li');
       li.innerHTML = `${resultArray[i].text}`;
       li.dataset.timeStamp = resultArray[i].timeStamp;
+      li.classList.add('list');
       if (resultArray[i].isComplete) {
         li.classList.add('completed');
       }
