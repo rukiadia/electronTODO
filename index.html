@@ -7,11 +7,11 @@
   </head>
   <body>
     <div class="wrapper">
-      <form class="form" onsubmit='module.addTodo()'>
-        <input type="text" id="todoText" value="" placeholder="please type YOUR TODO">
-        <input type="button" id="addBtn" value="add"/>
+      <form class="form jscForm">
+        <input type="text" class="todoText jscTodoText" value="" placeholder="please type YOUR TODO">
+        <input type="submit" class="addBtn" value="add"/>
       </form>
-      <ul class="todoList"></ul>
+      <ul class="todoList jscTodoList"></ul>
     </div>
     <script src="./js/main.js"></script>
   </body>

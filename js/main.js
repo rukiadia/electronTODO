@@ -5,13 +5,14 @@ const moment = require('moment');
 const module = {
   db: null,
   setEventListeners: () => {
-    module.addBtn = document.querySelector('#addBtn');
-    module.todoText = document.querySelector('#todoText');
-    module.todoList = document.querySelector('.todoList');
+    module.form = document.querySelector('.jscForm');
+    module.todoText = document.querySelector('.jscTodoText');
+    module.todoList = document.querySelector('.jscTodoList');
     module.todoList.addEventListener('click', (event) => {
       module.updateTodo(event.target);
     });
-    module.addBtn.addEventListener('click', () => {
+    module.form.addEventListener('submit', (event) => {
+      event.preventDefault();
       module.addTodo();
     }, false);
   },
