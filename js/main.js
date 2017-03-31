@@ -18,7 +18,7 @@ const module = {
   },
   renderer: (resultArray) => {
     for (let i = 0; i < resultArray.length; i++) {
-      var li = document.createElement('li');
+      const li = document.createElement('li');
       li.innerHTML = `${resultArray[i].text}`;
       li.dataset.timeStamp = resultArray[i].timeStamp;
       li.classList.add('list');
@@ -31,7 +31,7 @@ const module = {
   init: () => {
     // 初期処理
     module.setEventListeners();
-    var request = window.indexedDB.open('my_db', 3);
+    const request = window.indexedDB.open('my_db', 3);
 
     request.onupgradeneeded = (event) => {
       // DBVersionが上がった場合だけ呼ばれる
@@ -45,11 +45,10 @@ const module = {
         db.deleteObjectStore('todo');
       }
       // 新規作成
-      var store = db.createObjectStore('todo', {
+      const store = db.createObjectStore('todo', {
         // timeStampは一意なので、keyPathとして使う
         keyPath: 'timeStamp'
       });
-      console.log('store', store);
     };
 
     // DBを開くリクエスト。ここが正常に上手くいった場合は、保持
