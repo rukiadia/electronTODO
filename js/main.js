@@ -17,7 +17,10 @@ const module = {
     }, false);
   },
   renderer: (resultArray) => {
-    for (let i = 0; i < resultArray.length; i++) {
+    // TODOリストの描画
+    module.todoList.innerHTML = ''; // リストのリセット
+    let documentFragment = document.createDocumentFragment();
+      for (let i = 0; i < resultArray.length; i++) {
       const li = document.createElement('li');
       li.innerHTML = `${resultArray[i].text}`;
       li.dataset.timeStamp = resultArray[i].timeStamp;
@@ -25,8 +28,9 @@ const module = {
       if (resultArray[i].isComplete) {
         li.classList.add('completed');
       }
-      module.todoList.appendChild(li);
+      documentFragment.appendChild(li);
     }
+    module.todoList.appendChild(documentFragment);
   },
   init: () => {
     // 初期処理
@@ -55,7 +59,7 @@ const module = {
     request.onsuccess = (event) => {
       module.db = event.target.result;
       // 初期表示時に、保存されている物を全て取っておく
-      module.getAllTodo(module.renderer);
+      module.getAllTodo();
     }
   },
   addTodo: () => {
@@ -64,6 +68,7 @@ const module = {
       alert('入力欄が未入力です');
       return;
     }
+    module.todoText.value = '';
 
     const db = module.db;
     // DBからObjectStoreへのトランザクションを生成する
@@ -71,16 +76,21 @@ const module = {
     // アクティブなobjectの生成
     const transaction = db.transaction(['todo'], 'readwrite');
     const todoObjectStore = transaction.objectStore('todo');
-    // putするリクエストを生成
-    todoObjectStore.put({
+    const addData = {
       text: text,
       date: moment().format('MM/DD'),
       isComplete: false,
       timeStamp: Date.now()
-    });
+    };
+    // putするリクエストを生成
+    todoObjectStore.put(addData);
     transaction.oncomplete = () => {
       // リクエスト成功時は、リストに反映
-      module.getAllTodo(module.renderer);
+      const li = document.createElement('li');
+      li.innerHTML = `${addData.text}`;
+      li.dataset.timeStamp = addData.timeStamp;
+      li.classList.add('list');
+      module.todoList.appendChild(li);
     };
     transaction.onerror = (error) => {
       alert(error);
@@ -114,10 +124,7 @@ const module = {
       alert(error);
     };
   },
-  getAllTodo: (renderer) => {
-    if (renderer) {
-      document.querySelector('.todoList').innerHTML = '';
-    }
+  getAllTodo: () => {
     const db = module.db;
     const store = db.transaction(['todo'], 'readwrite').objectStore('todo');
 
@@ -129,7 +136,7 @@ const module = {
       const result = event.target.result;
       // 走査すべきObjectがこれ以上ない場合は処理終了
       if (!result) {
-        renderer(resultArray);
+        module.renderer(resultArray);
         return;
       }
       resultArray.push(result.value);
