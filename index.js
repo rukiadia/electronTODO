@@ -11,7 +11,9 @@ const createWindow = () => {
   // メインウィンドウ作成
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600
+    height: 600,
+    backgroundColor: '#FFFFFF',
+		titleBarStyle: 'hidden'
   });
 
   // メインウィンドウに対するURL指定
